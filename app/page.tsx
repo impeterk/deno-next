@@ -1,9 +1,11 @@
 import { Button } from "@/components/ui/button";
-import { authClient } from "@/lib/auth-client";
+import { auth } from "@/lib/auth";
 import prisma from "@/lib/db/prisma";
+import { headers as nextHeaders } from "next/headers";
 import Image from "next/image";
 import Link from "next/link";
 import { Suspense, unstable_ViewTransition as ViewTransition } from "react";
+import UserClient from "./user-client";
 
 export default function Home() {
   return (
@@ -45,34 +47,32 @@ async function UsersList() {
 }
 
 async function AuthPart() {
-  const { data: session, error } = await authClient.getSession();
-
-  const signUp = async () => {
+  const headers = await nextHeaders();
+  const sessions = await auth.api.listSessions({ headers });
+  console.log("Sessions:", sessions);
+  async function nukeSessions() {
     "use server";
-    await authClient.signUp.email({
-      email: "email@email.com", // user email address
-      password: "password", // user password -> min 8 characters by default
-      name: "Fesak", // user display name
-    });
-  };
-  const signIn = async () => {
-    "use server";
-
-    await authClient.signIn.email({
-      email: "email@email.com",
-      password: "password",
-    });
-  };
+    for (const session of sessions) {
+      if (session.userAgent === "node") {
+        await auth.api.revokeSession({
+          body: { token: session.token },
+          headers,
+        });
+      }
+    }
+  }
+  const clientSession = await auth.api.getSession({ headers });
   return (
     <>
-      {JSON.stringify(session, null, 2)} <br />
-      {JSON.stringify(error, null, 2)} <br />
-      <form action={signUp}>
-        <Button type="submit">Sign Up</Button>
-      </form>
-      <form action={signIn}>
-        <Button type="submit">Sign In</Button>
-      </form>
+      {sessions.some((sesh) => sesh.userAgent === "node") && (
+        <form action={nukeSessions}>
+          <Button type="submit" variant="destructive" className="mb-4">
+            Nuke Node Sessions
+          </Button>
+        </form>
+      )}
+      {JSON.stringify(clientSession, null, 2)}
+      <UserClient />
     </>
   );
 }
