@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { authClient } from "@/lib/auth-client";
 import prisma from "@/lib/db/prisma";
 import Image from "next/image";
 import Link from "next/link";
@@ -17,6 +18,7 @@ export default function Home() {
             <UsersList />
           </Suspense>
         </ol>
+        <AuthPart />
       </main>
     </div>
   );
@@ -38,6 +40,39 @@ async function UsersList() {
           </Button>
         </li>
       ))}
+    </>
+  );
+}
+
+async function AuthPart() {
+  const { data: session, error } = await authClient.getSession();
+
+  const signUp = async () => {
+    "use server";
+    await authClient.signUp.email({
+      email: "email@email.com", // user email address
+      password: "password", // user password -> min 8 characters by default
+      name: "Fesak", // user display name
+    });
+  };
+  const signIn = async () => {
+    "use server";
+
+    await authClient.signIn.email({
+      email: "email@email.com",
+      password: "password",
+    });
+  };
+  return (
+    <>
+      {JSON.stringify(session, null, 2)} <br />
+      {JSON.stringify(error, null, 2)} <br />
+      <form action={signUp}>
+        <Button type="submit">Sign Up</Button>
+      </form>
+      <form action={signIn}>
+        <Button type="submit">Sign In</Button>
+      </form>
     </>
   );
 }
