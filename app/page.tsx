@@ -49,6 +49,7 @@ async function UsersList() {
 async function AuthPart() {
   const headers = await nextHeaders();
   const clientSession = await auth.api.getSession({ headers });
+
   return (
     <>
       {JSON.stringify(clientSession, null, 2)}

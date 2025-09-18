@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
+
 import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
+
 import "./globals.css";
 import Providers from "@/providers";
-import { ThemeSwitch } from "@/components/theme-switch";
 import Footer from "@/components/layout/footer";
 import Header from "@/components/layout/header";
 
@@ -18,7 +19,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html suppressHydrationWarning lang="en">
       <body
         className={`${GeistSans.variable} ${GeistMono.variable} antialiased grid grid-rows-[auto_1fr_auto]`}
       >

@@ -1,6 +1,7 @@
 "use client";
+import { unstable_ViewTransition as ViewTransition } from "react";
+
 import { Post, User } from "@/lib/generated/prisma";
-import { use, unstable_ViewTransition as ViewTransition } from "react";
 
 type PostWithAuthor = Post & { author: User };
 export default function PageClient({ posts }: { posts: PostWithAuthor[] }) {

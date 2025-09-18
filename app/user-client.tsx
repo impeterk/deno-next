@@ -18,6 +18,7 @@ export default function UserClient() {
       email: "email@email.com",
       password: "password",
     });
+
     console.log({ data, error });
   };
   const signOut = async () => {
@@ -31,14 +32,14 @@ export default function UserClient() {
           <p>{JSON.stringify(session, null, 2)}</p>
           {session.user.image && (
             <img
-              src={session.user.image}
               alt="User Image"
-              width={50}
               height={50}
+              src={session.user.image}
+              width={50}
             />
           )}
           <form action={signOut}>
-            <Button type="submit" variant="destructive" className="mb-4">
+            <Button className="mb-4" type="submit" variant="destructive">
               Sign Out
             </Button>
           </form>
@@ -47,7 +48,9 @@ export default function UserClient() {
       {!session && (
         <>
           <form action={signUp}>
-            <Button type="submit">Sign Up</Button>
+            <Button type="submit" variant={"secondary"}>
+              Sign Up
+            </Button>
           </form>
           <form action={signIn}>
             <Button type="submit">Sign In</Button>

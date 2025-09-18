@@ -1,8 +1,8 @@
 "use client";
 
 import type { JSX } from "react";
-import { useEffect, useState } from "react";
 
+import { useEffect, useState } from "react";
 import { IconDeviceDesktop, IconMoon, IconSun } from "@tabler/icons-react";
 import { motion } from "motion/react";
 import { useTheme } from "next-themes";
@@ -24,23 +24,23 @@ function ThemeOption({
 }) {
   return (
     <button
-      className={cn(
-        "relative flex size-8 cursor-default items-center justify-center  transition-all [&_svg]:size-4 rounded-full",
-        isActive ? "bg-muted text-primary" : "text-foreground hover:bg-muted"
-      )}
-      role="radio"
       aria-checked={isActive}
       aria-label={`Switch to ${value} theme`}
-      onClick={() => onClick(value)}
+      className={cn(
+        "relative flex size-8 cursor-default items-center justify-center  transition-all [&_svg]:size-4 rounded-full",
+        isActive ? "bg-muted text-primary" : "text-foreground hover:bg-muted",
+      )}
+      role="radio"
       type="button"
+      onClick={() => onClick(value)}
     >
       {icon}
 
       {isActive && (
         <motion.div
+          className="border-primary absolute inset-0 rounded-full border"
           layoutId="theme-option"
           transition={{ type: "keyframes", duration: 0.3 }}
-          className="border-primary absolute inset-0 rounded-full border"
         />
       )}
     </button>
@@ -69,6 +69,7 @@ function ThemeSwitcher() {
 
   useEffect(() => {
     setIsMounted(true);
+
     return () => setIsMounted(false);
   }, []);
 
@@ -85,8 +86,8 @@ function ThemeSwitcher() {
         <ThemeOption
           key={option.value}
           icon={option.icon}
-          value={option.value}
           isActive={theme === option.value}
+          value={option.value}
           onClick={setTheme}
         />
       ))}
