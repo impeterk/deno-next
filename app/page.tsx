@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button";
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/db/prisma";
 import { headers as nextHeaders } from "next/headers";
-import Image from "next/image";
 import Link from "next/link";
 import { Suspense, unstable_ViewTransition as ViewTransition } from "react";
 import UserClient from "./user-client";
@@ -21,6 +20,7 @@ export default function Home() {
           </Suspense>
         </ol>
         <AuthPart />
+        {/* <UserClient /> */}
       </main>
     </div>
   );
@@ -48,29 +48,9 @@ async function UsersList() {
 
 async function AuthPart() {
   const headers = await nextHeaders();
-  const sessions = await auth.api.listSessions({ headers });
-  console.log("Sessions:", sessions);
-  async function nukeSessions() {
-    "use server";
-    for (const session of sessions) {
-      if (session.userAgent === "node") {
-        await auth.api.revokeSession({
-          body: { token: session.token },
-          headers,
-        });
-      }
-    }
-  }
   const clientSession = await auth.api.getSession({ headers });
   return (
     <>
-      {sessions.some((sesh) => sesh.userAgent === "node") && (
-        <form action={nukeSessions}>
-          <Button type="submit" variant="destructive" className="mb-4">
-            Nuke Node Sessions
-          </Button>
-        </form>
-      )}
       {JSON.stringify(clientSession, null, 2)}
       <UserClient />
     </>
